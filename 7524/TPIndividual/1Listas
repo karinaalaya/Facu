@@ -1,0 +1,14 @@
+% EJERCICIO 1 LISTAS
+% Length function
+fun {Length Xs}
+    case Xs of nil then 0
+    [] H|T then 1 + {Length T}
+end
+
+% invocation examples
+{Show {Length [1 2 10]}}
+{Show {Length [1 2 10 'test']}}
+{Show {Length ['a' 'b' 'c']}}
+{Show {Length ['a' 'b' 'c' 4 5 6 7 8 9 10]}}
+
+
