@@ -46,6 +46,16 @@ declare fun {Member Xs Y}
 	      end
 	   end
 	end
+	
+% Position function
+declare fun {Position Xs Y}
+	   case Xs of nil then 0
+	   [] H|T then
+	      if H == Y then 0
+	      else 1 + {Position T Y}
+	      end
+	   end
+	end
 
 % invocation examples Member
 {Show 'Member examples'}
@@ -102,4 +112,15 @@ declare fun {Member Xs Y}
 {Show {Member [1 2 10 15] 3}}
 {Show {Member [1 2 10 15] 5}}
 {Show {Member [1 2 10 15] nil}}
+{Show {Member nil a}}
+
+
+% invocation examples Position
+{Show 'Position examples'}
+{Show {Position [1 2 10 15] 10}}
+{Show {Position [1 2 10 a 15] 15}}
+{Show {Position [1 2 10 a 15] a}}
+{Show {Position [1 2 10 15] 1}}
+{Show {Position [1 2 10 15] 3}}
+
 
