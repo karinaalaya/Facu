@@ -25,6 +25,16 @@ declare fun {Drop Xs N}
 	      end
 	   end
 	end
+	
+% Append function
+declare fun {Append Xs Ys}
+	   if Ys == nil then Xs
+	   else
+	      case Xs of nil then Ys
+	      [] H|T then H|{Append T Ys}
+	      end
+	   end
+	end
 
 % invocation examples Length
 {Show 'Length examples'}
@@ -49,4 +59,13 @@ declare fun {Drop Xs N}
 {Show {Drop [a b c d] 4}}
 {Show {Drop [a b c d] 1}}
 {Show {Drop [a b c d] 0}}
+
+% invocation examples Append
+{Show 'Append examples'}
+{Show {Append [1 2 10 15] [a b c d]}}
+{Show {Append [1 2 10 15] nil}}
+{Show {Append nil [a b]}}
+{Show {Append [1 2 10 15] [a]}}
+{Show {Append [1] [a b]}}
+
 
