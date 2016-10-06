@@ -35,6 +35,29 @@ declare fun {Append Xs Ys}
 	      end
 	   end
 	end
+	
+% Member function
+declare fun {Member Xs Y}
+	   case Xs of nil then false
+	   [] H|T then
+	      if H == Y then true
+	      else
+		 {Member T Y}
+	      end
+	   end
+	end
+
+% invocation examples Member
+{Show 'Member examples'}
+{Show {Member [1 2 10 15] 2}}
+{Show {Member [1 2 10 15] 1}}
+{Show {Member [1 2 10 15] 10}}
+{Show {Member [1 2 10 a 15] 15}}
+{Show {Member [1 2 10 a 15] a}}
+{Show {Member [1 2 10 15] b}}
+{Show {Member [1 2 10 15] 3}}
+{Show {Member [1 2 10 15] 5}}
+{Show {Member [1 2 10 15] nil}}
 
 % invocation examples Length
 {Show 'Length examples'}
@@ -68,4 +91,15 @@ declare fun {Append Xs Ys}
 {Show {Append [1 2 10 15] [a]}}
 {Show {Append [1] [a b]}}
 
+% invocation examples Member
+{Show 'Member examples'}
+{Show {Member [1 2 10 15] 2}}
+{Show {Member [1 2 10 15] 1}}
+{Show {Member [1 2 10 15] 10}}
+{Show {Member [1 2 10 a 15] 15}}
+{Show {Member [1 2 10 a 15] a}}
+{Show {Member [1 2 10 15] b}}
+{Show {Member [1 2 10 15] 3}}
+{Show {Member [1 2 10 15] 5}}
+{Show {Member [1 2 10 15] nil}}
 
