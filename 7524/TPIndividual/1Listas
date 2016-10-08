@@ -57,18 +57,6 @@ declare fun {Position Xs Y}
 	   end
 	end
 
-% invocation examples Member
-{Show 'Member examples'}
-{Show {Member [1 2 10 15] 2}}
-{Show {Member [1 2 10 15] 1}}
-{Show {Member [1 2 10 15] 10}}
-{Show {Member [1 2 10 a 15] 15}}
-{Show {Member [1 2 10 a 15] a}}
-{Show {Member [1 2 10 15] b}}
-{Show {Member [1 2 10 15] 3}}
-{Show {Member [1 2 10 15] 5}}
-{Show {Member [1 2 10 15] nil}}
-
 % invocation examples Length
 {Show 'Length examples'}
 {Show {Length [1 2 10]}}
