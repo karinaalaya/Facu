@@ -1,0 +1,5 @@
+% WaitSome Procedure
+%http://www.comp.nus.edu.sg/~cs2104/Tutorials/tut10_2_in_1.ans.PDF
+declare proc {WaitSome Xs}
+	   
+	   end
