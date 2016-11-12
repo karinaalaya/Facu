@@ -1,0 +1,50 @@
+local Reverse1 Reverse2 A B C in
+   fun lazy {Reverse1 S}
+      fun {Rev S R}
+	 case S of nil then
+	    {Show R}
+	    R
+	    
+	 [] X|S2 then
+	    {Show X}
+	    {Rev S2 X|R}
+	    
+	 end
+      end
+   in {Rev S nil} end
+   
+   fun lazy {Reverse2 S}
+      fun lazy {Rev S R}
+	 case S of nil then
+	    {Show R}
+	    R
+	    
+	 [] X|S2 then
+	    {Show X}
+	    {Rev S2 X|R}
+	   
+	 end
+      end
+   in {Rev S nil} end
+   {Show 'Comenzamos'}
+   A = [a b c]
+   {Show 'Antes de llamar reverse1'}
+   B = {Reverse1 A}
+   {Show 'Antes del Show B'}
+  % {Show  {Reverse1 A}}
+  % {Show A}
+   {Show B}
+   {Show 'Antes del case'}
+   case B of K|_ then
+      {Show K}
+   end
+   {Show 'Antes de llamar reverse2'}
+   C = {Reverse2 A}
+   {Show 'Antes de Show C'}
+   %{Show {Reverse2 A}}
+   {Show C}
+   {Show 'Antes del case'}
+   case C of M|_ then
+      {Show M}
+   end
+end
