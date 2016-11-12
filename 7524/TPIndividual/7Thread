@@ -1,0 +1,21 @@
+local A B C in
+   thread
+      if A then
+	 B=true
+	 {Show 'thread 1 A is true'}
+      else
+	 B=false
+	 {Show 'thread 1 A is false'}
+      end
+   end
+   thread
+      if B then	 
+	 C=false
+	 {Show 'thread 2 B is true'}
+      else
+	 C=true
+	 {Show 'thread 2 B is false'}
+      end
+   end
+   A=false
+end

@@ -1,5 +1,26 @@
-% WaitSome Procedure
-%http://www.comp.nus.edu.sg/~cs2104/Tutorials/tut10_2_in_1.ans.PDF
-declare proc {WaitSome Xs}
-	   
-	   end
+local WaitSome in
+   WaitSome = proc {$ Xs}
+		 local Y in
+		    {ForAll Xs
+		     proc {$ X}
+			thread {Wait X}
+			   Y = true
+			   {Show 'Valor Bindeado:'}
+			   {Show X}
+			end
+		     end
+		    }
+		    {Show 'Esperando por algun valor a bindear'}
+		    {Wait Y}
+		    {Show 'Al menos uno fue bindeado'}
+		    
+		 end
+
+	      end
+   {Show 'Primera lista los 3 valores bindeados'}
+   {WaitSome [1 2 3]}
+   {Show 'Segunda lista solo uno esta bindeado'}
+   {WaitSome [_ 2 _]}
+   {Show 'Tercera lista ninguno esta bindeado'}
+   {WaitSome [_ _ _]}      
+end
