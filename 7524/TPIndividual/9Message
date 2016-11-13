@@ -1,0 +1,26 @@
+declare proc {Karina Xs}
+	   {Show 'Hoa'}
+	   %Xs
+	   case Xs of nil then {Show 'Fin!'}
+	   [] H|T then
+	      {Show H}
+	      {Karina T}
+	      end
+	end
+
+
+% local S P X M in
+%    {NewPort S P}
+%    {Browse S}
+%    X = [a b]
+%    M = {Karina X}
+%    {Send P a}
+%    {Send P b}
+% end
+
+local S P in
+   {NewPort S P}
+   {Karina S}
+   {Send P a}
+   {Send P b}
+end
