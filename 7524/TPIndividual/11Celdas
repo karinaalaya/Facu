@@ -1,0 +1,18 @@
+declare
+% Declara la celda X y la inicializa con el valor 0
+X={NewCell 0}
+% A la celda X le asigna el valor 5
+{Assign X 5}
+% A la celda Y le asigna la celda X y ambas tendrán el mismo valor
+Y=X
+% A la celda Y (y tambien X) le asignará el valor 10
+{Assign Y 10}
+% Pregunta si el valor de la celda X es 10
+{Browse {Access X}==10} %Imprime true
+{Browse X==Y} %Imprime true, ambas celdas son la misma
+% A la celda Z le asigna el valor inicial 10
+Z={NewCell 10}
+% Compara la celda Z (nueva) con la celda Y son distintas celdas
+{Browse Z==Y} %Imprime false
+% Obtiene el valor de X y el valor de Z ambos son 10
+{Browse @X==@Z} %Imprime true
