@@ -1,0 +1,80 @@
+% local D D1 D2 D3 in
+%    D = {NewDictionary}
+%    {Dictionary.put D karina 30}
+%    {Dictionary.put D karina 20}
+%    {Dictionary.put D pablo 3}
+%   % {Browse {Domain D3}}
+%   % {Browse {CondGet D3 karina 0}}
+%    {Browse D}
+% end 
+
+fun {NewDicc} leaf end
+fun {Put Ds Key Value}
+% ... similar to Insert
+   case Ds
+   of leaf then tree(Key Value leaf leaf)
+   [] tree(Y W T1 T2) andthen Key == Y then
+      tree(Key Value T1 T2)
+   [] tree(Y W T1 T2) andthen Key < Y then
+      tree(Y W {Put Key Value T1} T2)
+   [] tree(Y W T1 T2) andthen Key > Y then
+      tree(Y W T1 {Put Key Value T2})
+   end
+end
+fun {Get Ds Key Default}
+% ... similar to Lookup
+
+   case Ds
+   of leaf then found(Default) %notfound
+   [] tree(Y V T1 T2) andthen Key == Y then found(V)
+   [] tree(Y V T1 T2) andthen Key < Y then {Get T1 Key Default}
+   [] tree(Y V T1 T2) andthen Key > Y then {Get T2 Key Default}
+   end
+   
+end
+
+%Domain obtained from book, not the one that we need to return
+% fun {Domain Ds}
+%    proc {DomainD Ds ?S1 Sn}
+%       case Ds
+%       of leaf then
+% 	 S1=Sn
+%       [] tree(K _ L R) then S2 S3 in
+% 	 {DomainD L S1 S2}
+% 	 S2=K|S3
+% 	 {DomainD R S3 Sn}
+%       end
+%    end D
+% in
+%    {DomainD Ds D nil} D
+% end
+
+proc {LlenarDiccionario L D}
+   local K in
+      case H|T
+	 K = {Get D H 0}
+	 {Put D H K+1}
+	 {LlenarDiccioinario T D}
+      end
+   end
+   
+end
+
+proc {Programa L}
+   local D A in
+      % Inicializo el diccionario
+      D = {NewDicc}
+      % Lleno el diccionario
+      {LlenarDiccionario L D}
+      % Obtengo el arbol
+      A = {Domain D}
+      %Imprimir el arbol
+      {Browse A}
+   end
+   
+   %{Browse L}
+end
+local L1 in
+   L1 = [a b a b c a]
+   {Programa 2L}   
+end
