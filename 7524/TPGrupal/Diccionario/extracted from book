@@ -1,0 +1,35 @@
+declare fun {NewDictionary} nil end
+declare fun {Put Ds Key Value}
+   case Ds
+   of nil then [Key#Value]
+   [] (K#V)|Dr andthen Key==K then
+      (Key#Value) | Dr
+   [] (K#V)|Dr andthen K>Key then
+      (Key#Value)|(K#V)|Dr
+   [] (K#V)|Dr andthen K<Key then
+      (K#V)|{Put Dr Key Value}
+   end
+end
+declare fun {CondGet Ds Key Default}
+   case Ds
+   of nil then Default
+   [] (K#V)|Dr andthen Key==K then
+      V
+   [] (K#V)|Dr andthen K>Key then
+      Default
+   [] (K#V)|Dr andthen K<Key then
+      {CondGet Dr Key Default}
+   end
+end
+declare fun {Domain Ds}
+   {Map Ds fun {$ K#_} K end}
+	end
+
+local D D1 in
+   D = {NewDictionary}
+   D1 = {Put D karina 30}
+   D2 = {Put D1 karina 20}
+   D3 = {Put D2 pablo 3}
+   {Browse {Domain D3}}
+   {Browse {CondGet D3 karina 0}}
+end
