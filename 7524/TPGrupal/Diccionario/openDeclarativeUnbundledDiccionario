@@ -30,8 +30,14 @@ local Diccionario D D2 D3 D4 Val Val2 Val3 L1 Programa LlenarDiccionario in
 	 local R InsertarOrdenadoFrecuencia PutByValue in
 	    fun {PutByValue Ds Key Value}
 	       case Ds of leaf then
-		  tree(Key Value leaf leaf)
-	       [] tree(Y W T1 T2) andthen Value =< W then
+			tree(Key Value leaf leaf)
+		  [] tree(Y W T1 T2) andthen Value == W then
+			if (Key < Y) then
+				tree(Y W {PutByValue T1 Key Value} T2)
+			else
+				tree(Y W T1 {PutByValue T2 Key Value})
+			end
+	       [] tree(Y W T1 T2) andthen Value < W then
 		  tree(Y W {PutByValue T1 Key Value} T2)
 	       [] tree(Y W T1 T2) andthen Value > W then
 		  tree(Y W T1 {PutByValue T2 Key Value})
