@@ -1,12 +1,12 @@
 % OPEN DECLARATIVE UNBUNDLED
-local Diccionario D D2 D3 D4 Val Val2 Val3 L1 Programa LlenarDiccionario ImprimirArbol in
+local Diccionario D2 L1 Programa LlenarDiccionario ImprimirArbol in
    local
       fun {NewDicc} leaf end
       fun {Put Ds Key Value}
 		 case Ds
 		 of leaf then
 			tree(Key Value leaf leaf)
-		 [] tree(Y W T1 T2) andthen Key == Y then
+		 [] tree(Y _ T1 T2) andthen Key == Y then
 			tree(Key Value T1 T2)
 		 [] tree(Y W T1 T2) andthen Key < Y then
 			tree(Y W {Put T1 Key Value} T2)
@@ -18,11 +18,11 @@ local Diccionario D D2 D3 D4 Val Val2 Val3 L1 Programa LlenarDiccionario Imprimi
 		 case Ds
 		 of leaf then
 			Default %notfound
-		 [] tree(Y V T1 T2) andthen Key == Y then
+		 [] tree(Y V _ _) andthen Key == Y then
 			V
-		 [] tree(Y V T1 T2) andthen Key < Y then
+		 [] tree(Y _ T1 _) andthen Key < Y then
 			{Get T1 Key Default}
-		 [] tree(Y V T1 T2) andthen Key > Y then
+		 [] tree(Y _ _ T2) andthen Key > Y then
 			{Get T2 Key Default}
 		 end
       end
