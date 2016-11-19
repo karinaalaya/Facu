@@ -1,25 +1,55 @@
 % OPEN DECLARATIVE UNBUNDLED
-local Stack S2 S3 S4 S S5 Val Val2 in
+local Diccionario D D2 D3 D4 Val Val2 Val3 in
    local
-      fun {NewStack} nil end
-      fun {Push S E} E|S end
-      fun {Pop S ?E} case S of X|S1 then E=X S1 end end
+      fun {NewDicc} leaf end
+      fun {Put Ds Key Value}
+		 case Ds
+		 of leaf then
+			{Browse 'primer elemento'}
+			tree(Key Value leaf leaf)
+		 [] tree(Y W T1 T2) andthen Key == Y then
+			{Browse 'key es igual'}
+			tree(Key Value T1 T2)
+		 [] tree(Y W T1 T2) andthen Key < Y then
+			{Browse 'Key es menor'}
+			tree(Y W {Put T1 Key Value} T2)
+		 [] tree(Y W T1 T2) andthen Key > Y then
+			{Browse 'Key es mayor'}
+			tree(Y W T1 {Put T2 Key Value})
+		 end
+      end
+      fun {Get Ds Key Default}
+		 case Ds
+		 of leaf then
+			found(Default) %notfound
+		 [] tree(Y V T1 T2) andthen Key == Y then
+			found(V)
+		 [] tree(Y V T1 T2) andthen Key < Y then
+			{Get T1 Key Default}
+		 [] tree(Y V T1 T2) andthen Key > Y then
+			{Get T2 Key Default}
+		 end
+      end
       fun {IsEmpty S} S==nil end
    in
-      Stack=stack(new:NewStack push:Push pop:Pop isEmpty:IsEmpty)
+      Diccionario=diccionario(new:NewDicc put:Put get:Get isEmpty:IsEmpty)
    end
-   S = {Stack.new}
-   S2 = {Stack.push S 4}
-   S3 = {Stack.push S2 10}
-   S4 = {Stack.pop S3 Val}
-   S5 = {Stack.pop [3 14 10 9 8] Val2}
-   {Browse S}
-   {Browse S2}
-   {Browse S3}
+   D = {Diccionario.new}
+   D2 = {Diccionario.put D a 2}
+   D3 = {Diccionario.put D2 b 3}
+   D4 = {Diccionario.put D3 karina 5}
+   {Browse D4}
+   Val = {Diccionario.get D4 a 0}
+   Val2 = {Diccionario.get D4 karina 1}
+   Val3 = {Diccionario.get D4 karina2 6}
    {Browse Val}
-   {Browse S4}
    {Browse Val2}
-   {Browse S5}
+   {Browse Val3}
+   % {Browse S3}
+   % {Browse Val}
+   % {Browse S4}
+   % {Browse Val2}
+   % {Browse S5}
    
 end
 
