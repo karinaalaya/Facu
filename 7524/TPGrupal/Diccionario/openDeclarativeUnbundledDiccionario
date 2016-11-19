@@ -1,5 +1,5 @@
 % OPEN DECLARATIVE UNBUNDLED
-local Diccionario D D2 D3 D4 Val Val2 Val3 L1 Programa LlenarDiccionario in
+local Diccionario D D2 D3 D4 Val Val2 Val3 L1 Programa LlenarDiccionario ImprimirArbol in
    local
       fun {NewDicc} leaf end
       fun {Put Ds Key Value}
@@ -15,82 +15,90 @@ local Diccionario D D2 D3 D4 Val Val2 Val3 L1 Programa LlenarDiccionario in
 		 end
       end
       fun {Get Ds Key Default}
-	 case Ds
-	 of leaf then
-	    Default %notfound
-	 [] tree(Y V T1 T2) andthen Key == Y then
-	    V
-	 [] tree(Y V T1 T2) andthen Key < Y then
-	    {Get T1 Key Default}
-	 [] tree(Y V T1 T2) andthen Key > Y then
-	    {Get T2 Key Default}
-	 end
+		 case Ds
+		 of leaf then
+			Default %notfound
+		 [] tree(Y V T1 T2) andthen Key == Y then
+			V
+		 [] tree(Y V T1 T2) andthen Key < Y then
+			{Get T1 Key Default}
+		 [] tree(Y V T1 T2) andthen Key > Y then
+			{Get T2 Key Default}
+		 end
       end
       fun {Domain Ds}
-	 local R InsertarOrdenadoFrecuencia PutByValue in
-	    fun {PutByValue Ds Key Value}
-	       case Ds of leaf then
-			tree(Key Value leaf leaf)
-		  [] tree(Y W T1 T2) andthen Value == W then
-			if (Key < Y) then
-				tree(Y W {PutByValue T1 Key Value} T2)
-			else
-				tree(Y W T1 {PutByValue T2 Key Value})
+		 local R InsertarOrdenadoFrecuencia PutByValue in
+			fun {PutByValue Ds Key Value}
+				case Ds of leaf then
+					tree(Key Value leaf leaf)
+				[] tree(Y W T1 T2) andthen Value == W then
+					if (Key < Y) then
+						tree(Y W {PutByValue T1 Key Value} T2)
+					else
+						tree(Y W T1 {PutByValue T2 Key Value})
+					end
+				[] tree(Y W T1 T2) andthen Value < W then
+					tree(Y W {PutByValue T1 Key Value} T2)
+				[] tree(Y W T1 T2) andthen Value > W then
+					tree(Y W T1 {PutByValue T2 Key Value})
+				end
 			end
-	       [] tree(Y W T1 T2) andthen Value < W then
-		  tree(Y W {PutByValue T1 Key Value} T2)
-	       [] tree(Y W T1 T2) andthen Value > W then
-		  tree(Y W T1 {PutByValue T2 Key Value})
-	       end
-	    end
-	    fun {InsertarOrdenadoFrecuencia D1 R}
-	       local R2 R3 in
-		  case D1 of leaf then
-		     R
-		  [] tree(Y W T1 T2) then
-		     R2 = {PutByValue R Y W}
-		     R3 = {InsertarOrdenadoFrecuencia T1 R2}
-		     {InsertarOrdenadoFrecuencia T2 R3}
-		  end
-	       end
-	    end
-	    R = {Diccionario.new}
-	    {InsertarOrdenadoFrecuencia Ds R}
-	 end
+			fun {InsertarOrdenadoFrecuencia D1 R}
+			   local R2 R3 in
+				  case D1 of leaf then
+					 R
+				  [] tree(Y W T1 T2) then
+					 R2 = {PutByValue R Y W}
+					 R3 = {InsertarOrdenadoFrecuencia T1 R2}
+					 {InsertarOrdenadoFrecuencia T2 R3}
+				  end
+			   end
+			end
+			R = {Diccionario.new}
+			{InsertarOrdenadoFrecuencia Ds R}
+		 end
 		
       end
    in
       Diccionario=diccionario(new:NewDicc put:Put get:Get domain:Domain)
    end
    
-   fun {LlenarDiccionario L D}
-      local K D2 in
-	 case L of nil then
-	    D
-	 [] H|T then
-	    K = {Diccionario.get D H 0}
-	    D2 = {Diccionario.put D H K+1}
-	    {LlenarDiccionario T D2}
-	 end
-      end
-   end
+	fun {LlenarDiccionario L D}
+	  local K D2 in
+		 case L of nil then
+			D
+		 [] H|T then
+			K = {Diccionario.get D H 0}
+			D2 = {Diccionario.put D H K+1}
+			{LlenarDiccionario T D2}
+		 end
+	  end
+	end
+	
+	% Imprime el arbol ordenado por frecuencia y alfabeticamente
+	proc {ImprimirArbol A}
+		case A of leaf then
+			skip
+		[] tree(Key Value T1 T2) then
+			{ImprimirArbol T1}
+			{Browse Key#Value}
+			{ImprimirArbol T2}
+		end
+	end
 	% Un procedimiento que recibe una lista con letras 
 	% y muestra por pantalla la frecuencia de aparicion de cada letra
 	% usando como estructura de datos un diccionario
-   proc {Programa L}
-      local D A in
-		% Inicializo el diccionario
-	 D = {Diccionario.new}
-		% Lleno el diccionario
-	 D2 = {LlenarDiccionario L D}
-		% Obtengo el arbol
-	 {Browse D2}
-	 A = {Diccionario.domain D2}
-		%Imprimir el arbol
-	 {Browse A}
-      end
-   end   
-   L1 = [b b m m m a a c a c p p l l l]
-   {Programa L1}   
+	proc {Programa L}
+		local D A in
+			% Inicializo el diccionario
+			D = {Diccionario.new}
+			% Lleno el diccionario
+			D2 = {LlenarDiccionario L D}
+			A = {Diccionario.domain D2}
+			{ImprimirArbol A}
+		end
+	end   
+	L1 = [b b m m m a a c a c p p l l l x a j j j j p t r r n n n n n h]
+	{Programa L1}   
 end
 
