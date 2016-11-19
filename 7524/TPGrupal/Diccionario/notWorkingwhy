@@ -1,12 +1,3 @@
-% local D D1 D2 D3 in
-%    D = {NewDictionary}
-%    {Dictionary.put D karina 30}
-%    {Dictionary.put D karina 20}
-%    {Dictionary.put D pablo 3}
-%   % {Browse {Domain D3}}
-%   % {Browse {CondGet D3 karina 0}}
-%    {Browse D}
-% end 
 local NewDicc LlenarDiccionario Programa Domain L in
    fun {NewDicc} leaf end
    proc {Put Ds Key Value}

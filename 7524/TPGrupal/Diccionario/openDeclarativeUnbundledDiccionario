@@ -1,55 +1,79 @@
 % OPEN DECLARATIVE UNBUNDLED
-local Diccionario D D2 D3 D4 Val Val2 Val3 in
+local Diccionario D D2 D3 D4 Val Val2 Val3 L1 Programa LlenarDiccionario in
    local
       fun {NewDicc} leaf end
       fun {Put Ds Key Value}
-		 case Ds
-		 of leaf then
-			{Browse 'primer elemento'}
-			tree(Key Value leaf leaf)
-		 [] tree(Y W T1 T2) andthen Key == Y then
-			{Browse 'key es igual'}
-			tree(Key Value T1 T2)
-		 [] tree(Y W T1 T2) andthen Key < Y then
-			{Browse 'Key es menor'}
-			tree(Y W {Put T1 Key Value} T2)
-		 [] tree(Y W T1 T2) andthen Key > Y then
-			{Browse 'Key es mayor'}
-			tree(Y W T1 {Put T2 Key Value})
-		 end
+	 case Ds
+	 of leaf then
+	    {Browse 'primer elemento'}
+	    tree(Key Value leaf leaf)
+	 [] tree(Y W T1 T2) andthen Key == Y then
+	    {Browse 'key es igual'}
+	    tree(Key Value T1 T2)
+	 [] tree(Y W T1 T2) andthen Key < Y then
+	    {Browse 'Key es menor'}
+	    tree(Y W {Put T1 Key Value} T2)
+	 [] tree(Y W T1 T2) andthen Key > Y then
+	    {Browse 'Key es mayor'}
+	    tree(Y W T1 {Put T2 Key Value})
+	 end
       end
       fun {Get Ds Key Default}
-		 case Ds
-		 of leaf then
-			found(Default) %notfound
-		 [] tree(Y V T1 T2) andthen Key == Y then
-			found(V)
-		 [] tree(Y V T1 T2) andthen Key < Y then
-			{Get T1 Key Default}
-		 [] tree(Y V T1 T2) andthen Key > Y then
-			{Get T2 Key Default}
-		 end
+	 case Ds
+	 of leaf then
+	    Default %notfound
+	 [] tree(Y V T1 T2) andthen Key == Y then
+	    V
+	 [] tree(Y V T1 T2) andthen Key < Y then
+	    {Get T1 Key Default}
+	 [] tree(Y V T1 T2) andthen Key > Y then
+	    {Get T2 Key Default}
+	 end
       end
-      fun {IsEmpty S} S==nil end
+      fun {Domain Ds}
+	 {Browse 'TODO Domain'}
+	 Ds
+		% TODO
+      end
    in
-      Diccionario=diccionario(new:NewDicc put:Put get:Get isEmpty:IsEmpty)
+      Diccionario=diccionario(new:NewDicc put:Put get:Get domain:Domain)
    end
-   D = {Diccionario.new}
-   D2 = {Diccionario.put D a 2}
-   D3 = {Diccionario.put D2 b 3}
-   D4 = {Diccionario.put D3 karina 5}
-   {Browse D4}
-   Val = {Diccionario.get D4 a 0}
-   Val2 = {Diccionario.get D4 karina 1}
-   Val3 = {Diccionario.get D4 karina2 6}
-   {Browse Val}
-   {Browse Val2}
-   {Browse Val3}
-   % {Browse S3}
-   % {Browse Val}
-   % {Browse S4}
-   % {Browse Val2}
-   % {Browse S5}
    
+   fun {LlenarDiccionario L D}
+      {Browse 'Llenar Diccionario'}
+      {Browse L}
+      {Browse D}
+      local K D2 in
+	 case L of nil then
+	    {Browse 'lista es nil'}
+	    D
+	 [] H|T then
+	    {Browse 'llamada recursiva'}
+	    K = {Diccionario.get D H 0}
+	    {Browse K}
+	    D2 = {Diccionario.put D H K+1}
+	    {Browse D2}
+	    {LlenarDiccionario T D2}
+	 end
+      end
+   end
+	% Un procedimiento que recibe una lista con letras 
+	% y muestra por pantalla la frecuencia de aparicion de cada letra
+	% usando como estructura de datos un diccionario
+   proc {Programa L}
+      {Browse 'inicio programa'}
+      local D A in
+		% Inicializo el diccionario
+	 D = {Diccionario.new}
+		% Lleno el diccionario
+	 D2 = {LlenarDiccionario L D}
+		% Obtengo el arbol
+	 A = {Diccionario.domain D2}
+		%Imprimir el arbol
+	 {Browse A}
+      end
+   end   
+   L1 = [a b a b c a]
+   {Programa L1}   
 end
 
