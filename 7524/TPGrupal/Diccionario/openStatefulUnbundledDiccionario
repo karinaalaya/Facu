@@ -1,28 +1,115 @@
 % OPEN STATEFUL UNBUNDLED
 
-local Stack S C2 Val Val2 in
+local Diccionario D2 L1 Programa LlenarDiccionario ImprimirArbol in
    local
-      fun {NewStack} {NewCell nil} end
-      proc {Push C E} C:= E|@C  end
-      proc {Pop C ?E} case @C of X|S1 then E=X C:=S1 end end
-      fun {IsEmpty C} @C==nil end
+		fun {NewDicc} {NewCell leaf} end
+		proc {Put Ds Key Value}
+			local PutRec in
+				fun {PutRec Ds Key Value}
+					case Ds
+					of leaf then
+						tree(Key Value leaf leaf)
+					[] tree(Y _ T1 T2) andthen Key == Y then
+						tree(Key Value T1 T2)
+					[] tree(Y W T1 T2) andthen Key < Y then
+						tree(Y W {PutRec T1 Key Value} T2)
+					[] tree(Y W T1 T2) andthen Key > Y then
+						tree(Y W T1 {PutRec T2 Key Value})
+					end
+				end
+				Ds := {PutRec @Ds Key Value}
+			end
+		end
+		fun {Get Ds Key Default}
+			local GetRec in
+				fun {GetRec Ds Key Value}
+					 case Ds
+					 of leaf then
+						Default %notfound
+					 [] tree(Y V _ _) andthen Key == Y then
+						V
+					 [] tree(Y _ T1 _) andthen Key < Y then
+						{GetRec T1 Key Default}
+					 [] tree(Y _ _ T2) andthen Key > Y then
+						{GetRec T2 Key Default}
+					 end
+				end
+				{GetRec @Ds Key Value}
+			end
+		end
+		fun {Domain Ds}
+			local R InsertarOrdenadoFrecuencia PutByValue in
+				fun {PutByValue Ds Key Value}
+					case Ds of leaf then
+						tree(Key Value leaf leaf)
+					[] tree(Y W T1 T2) andthen Value == W then
+						if (Key < Y) then
+							tree(Y W {PutByValue T1 Key Value} T2)
+						else
+							tree(Y W T1 {PutByValue T2 Key Value})
+						end
+					[] tree(Y W T1 T2) andthen Value < W then
+						tree(Y W {PutByValue T1 Key Value} T2)
+					[] tree(Y W T1 T2) andthen Value > W then
+						tree(Y W T1 {PutByValue T2 Key Value})
+					end
+				end
+				fun {InsertarOrdenadoFrecuencia D1 R}
+				   local R2 R3 in
+					  case D1 of leaf then
+						 R
+					  [] tree(Y W T1 T2) then
+						 R2 = {PutByValue R Y W}
+						 R3 = {InsertarOrdenadoFrecuencia T1 R2}
+						 {InsertarOrdenadoFrecuencia T2 R3}
+					  end
+				   end
+				end
+				R = leaf
+				{InsertarOrdenadoFrecuencia @Ds R}
+			end
+		end
    in
-      Stack=stack(new:NewStack push:Push pop:Pop isEmpty:IsEmpty)
+      Diccionario=diccionario(new:NewDicc put:Put get:Get domain:Domain)
    end
-   S = {Stack.new}
-   {Browse @S}
-   {Stack.push S 4}
-   {Browse @S}
-   {Stack.push S 10}
-   {Browse @S}
-   {Stack.pop S Val}
-   {Browse Val}
-   {Browse @S}
-   C2 = {NewCell [3 14 10 9 8]}
-   {Browse @C2}
-   {Stack.pop C2 Val2}
-   {Browse @C2}
-   {Browse Val2}
+     
+   fun {LlenarDiccionario L D}
+	  local K in
+		 case L of nil then
+			D
+		 [] H|T then
+			K = {Diccionario.get D H 0}
+			{Diccionario.put D H K+1}
+			{LlenarDiccionario T D}
+		 end
+	  end
+	end
+	
+	% Imprime el arbol ordenado por frecuencia y alfabeticamente
+	proc {ImprimirArbol A}
+		case A of leaf then
+			skip
+		[] tree(Key Value T1 T2) then
+			{ImprimirArbol T1}
+			{Browse Key#Value}
+			{ImprimirArbol T2}
+		end
+	end
+	% Un procedimiento que recibe una lista con letras 
+	% y muestra por pantalla la frecuencia de aparicion de cada letra
+	% usando como estructura de datos un diccionario
+	proc {Programa L}
+		local D A in
+			% Inicializo el diccionario
+			D = {Diccionario.new}
+			% Lleno el diccionario
+			D2 = {LlenarDiccionario L D}
+			A = {Diccionario.domain D2}
+			{ImprimirArbol A}
+		end
+	end   
+	L1 = [b b m m m a a c a c p p l l l x a j j j j p t r r n n n n n h]
+	{Programa L1} 
    
 end
 
