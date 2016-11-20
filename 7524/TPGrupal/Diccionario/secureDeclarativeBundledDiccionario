@@ -1,32 +1,115 @@
 % SECURE DECLARATIVE BUNDLED
-local NewStack S2 S3 S4 S S5 Val Val2 in
-   local
-      fun {StackOps S}
-     	 fun {Push E} {StackOps E|S} end
-     	 fun {Pop ?E}
-	    case S of X|S1 then E=X {StackOps S1} end end
-	 fun {IsEmpty} S==nil end
-      in stack(push:Push pop:Pop isEmpty:IsEmpty) end
-   in
-      fun {NewStack} {StackOps nil} end
-   end
-      S = {NewStack}
-      S2 = {S.push 4}
-      S3 = {S2.push 10}
-      S4 = {S3.pop Val}
-   try
-      skip
-%	  S5 = {Stack.pop [3 14 10 9 8] Val2} % Esto no se puede porque es seguro, tira una excepcion
-      catch Exc then
-	 {Browse Exc}
-      end
-      {Browse S}
-      {Browse S2}
-      {Browse S3}
-      {Browse Val}
-      {Browse S4}
-      {Browse Val2}
-      {Browse S5}
+local NewDicc LlenarDiccionario ImprimirArbol Programa L1 in
+	local
+		fun {DiccOps D}
+			fun {Put Key Value}
+				local PutRec in
+					fun {PutRec Ds Key Value}
+						case Ds
+						of leaf then
+							tree(Key Value leaf leaf)
+						[] tree(Y _ T1 T2) andthen Key == Y then
+							tree(Key Value T1 T2)
+						[] tree(Y W T1 T2) andthen Key < Y then
+							tree(Y W {PutRec T1 Key Value} T2)
+						[] tree(Y W T1 T2) andthen Key > Y then
+							tree(Y W T1 {PutRec T2 Key Value})
+						end
+					end
+					{DiccOps {PutRec D Key Value}}
+				end
+			end
+			fun {Get Key Default}
+				local J in
+					 case D
+					 of leaf then
+						Default %notfound
+					 [] tree(Y V _ _) andthen Key == Y then
+						V
+					 [] tree(Y _ T1 _) andthen Key < Y then
+						J = {DiccOps T1}
+						{J.get Key Default}
+					 [] tree(Y _ _ T2) andthen Key > Y then
+						J = {DiccOps T2}
+						{J.get Key Default}
+					 end
+				 end
+			end
+			fun {Domain}
+				local R InsertarOrdenadoFrecuencia PutByValue in
+					fun {PutByValue Ds Key Value}
+						case Ds of leaf then
+							tree(Key Value leaf leaf)
+						[] tree(Y W T1 T2) andthen Value == W then
+							if (Key < Y) then
+								tree(Y W {PutByValue T1 Key Value} T2)
+							else
+								tree(Y W T1 {PutByValue T2 Key Value})
+							end
+						[] tree(Y W T1 T2) andthen Value < W then
+							tree(Y W {PutByValue T1 Key Value} T2)
+						[] tree(Y W T1 T2) andthen Value > W then
+							tree(Y W T1 {PutByValue T2 Key Value})
+						end
+					end
+					fun {InsertarOrdenadoFrecuencia D1 R}
+					   local R2 R3 in
+						  case D1 of leaf then
+							 R
+						  [] tree(Y W T1 T2) then
+							 R2 = {PutByValue R Y W}
+							 R3 = {InsertarOrdenadoFrecuencia T1 R2}
+							 {InsertarOrdenadoFrecuencia T2 R3}
+						  end
+					   end
+					end
+					R = leaf
+					{InsertarOrdenadoFrecuencia D R}
+				end
+			end
+		in diccionario(put:Put get:Get domain:Domain)
+		end
+	in
+		fun {NewDicc} {DiccOps leaf} end
+	end
+    
+	fun {LlenarDiccionario L D}
+	  local K D2 in
+		 case L of nil then
+			D
+		 [] H|T then
+			K = {D.get H 0}
+			D2 = {D.put H K+1}
+			{LlenarDiccionario T D2}
+		 end
+	  end
+	end
+	
+	% Imprime el arbol ordenado por frecuencia y alfabeticamente
+	proc {ImprimirArbol A}
+		case A of leaf then
+			skip
+		[] tree(Key Value T1 T2) then
+			{ImprimirArbol T1}
+			{Browse Key#Value}
+			{ImprimirArbol T2}
+		end
+	end
+	% Un procedimiento que recibe una lista con letras 
+	% y muestra por pantalla la frecuencia de aparicion de cada letra
+	% usando como estructura de datos un diccionario
+	proc {Programa L}
+		local D D2 A in
+			D = {NewDicc}
+			% Lleno el diccionario
+			D2 = {LlenarDiccionario L D}
+			A = {D2.domain}
+			{ImprimirArbol A}
+		end
+	end   
+	L1 = [b b m m m a a c a c p p l l l x a j j j j p t r r n n n n n h]
+	{Programa L1}
+	
 end
 
 
