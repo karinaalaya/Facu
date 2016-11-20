@@ -1,44 +1,124 @@
 % SECURE DECLARATIVE UNBUNDLED
 local NewWrapper in
-   proc {NewWrapper Wrap Unwrap}
-      local Key = {NewName} in
-	 fun {Wrap X}
-	    fun {$ K}
-	       if (K==Key) then X end
-	    end
-	 end
-	 fun {Unwrap W}
-	    {W Key}
-	 end
-      end
-   end
+	proc {NewWrapper Wrap Unwrap}
+		local Key = {NewName} in
+			fun {Wrap X}
+				fun {$ K}
+				   if (K==Key) then X end
+				end
+			end
+			fun {Unwrap W}
+			{W Key}
+			end
+		end
+	end
 
-   local Stack S2 S3 S4 S S5 Val Val2 Wrap Unwrap in
-      local
-	 {NewWrapper Wrap Unwrap}
-	 fun {NewStack} {Wrap nil} end
-	 fun {Push S E} {Wrap E|{Unwrap S}} end
-	 fun {Pop S ?E} case {Unwrap S} of X|S1 then E=X  {Wrap S1} end end
-	 fun {IsEmpty S} {Unwrap S}==nil end
-      in
-	 Stack=stack(new:NewStack push:Push pop:Pop isEmpty:IsEmpty)
-      end
-      S = {Stack.new}
-      S2 = {Stack.push S 4}
-      S3 = {Stack.push S2 10}
-      S4 = {Stack.pop S3 Val}
-      try
-	  S5 = {Stack.pop [3 14 10 9 8] Val2} % Esto no se puede porque es seguro, tira una excepcion
-      catch Exc then
-	 {Browse Exc}
-      end
-      {Browse S}
-      {Browse S2}
-      {Browse S3}
-      {Browse Val}
-      {Browse S4}
-      {Browse Val2}
-      {Browse S5}
-   end
+	local Diccionario Wrap Unwrap D2 L1 Programa LlenarDiccionario ImprimirArbol in
+		local
+			{NewWrapper Wrap Unwrap}
+			fun {NewDicc} {Wrap leaf} end
+			fun {Put Ds Key Value}
+				local PutRec in
+					fun {PutRec Ds Key Value}
+						case Ds
+						of leaf then
+							tree(Key Value leaf leaf)
+						[] tree(Y _ T1 T2) andthen Key == Y then
+							tree(Key Value T1 T2)
+						[] tree(Y W T1 T2) andthen Key < Y then
+							tree(Y W {PutRec T1 Key Value} T2)
+						[] tree(Y W T1 T2) andthen Key > Y then
+							tree(Y W T1 {PutRec T2 Key Value})
+						end
+					end
+					{Wrap {PutRec {Unwrap Ds} Key Value}}
+				end
+			end
+			fun {Get Ds Key Default}
+				case {Unwrap Ds}
+				of leaf then
+					Default %notfound
+				[] tree(Y V _ _) andthen Key == Y then
+					V
+				[] tree(Y _ T1 _) andthen Key < Y then
+					{Get {Wrap T1} Key Default}
+				[] tree(Y _ _ T2) andthen Key > Y then
+					{Get {Wrap T2} Key Default}
+				end
+			end
+			fun {Domain Ds}
+				local R InsertarOrdenadoFrecuencia PutByValue in
+				fun {PutByValue Ds Key Value}
+					case Ds of leaf then
+						tree(Key Value leaf leaf)
+					[] tree(Y W T1 T2) andthen Value == W then
+						if (Key < Y) then
+							tree(Y W {PutByValue T1 Key Value} T2)
+						else
+							tree(Y W T1 {PutByValue T2 Key Value})
+						end
+					[] tree(Y W T1 T2) andthen Value < W then
+						tree(Y W {PutByValue T1 Key Value} T2)
+					[] tree(Y W T1 T2) andthen Value > W then
+						tree(Y W T1 {PutByValue T2 Key Value})
+					end
+				end
+				fun {InsertarOrdenadoFrecuencia D1 R}
+				   local R2 R3 in
+					  case D1 of leaf then
+						 R
+					  [] tree(Y W T1 T2) then
+						 R2 = {PutByValue R Y W}
+						 R3 = {InsertarOrdenadoFrecuencia T1 R2}
+						 {InsertarOrdenadoFrecuencia T2 R3}
+					  end
+				   end
+				end
+				R = leaf
+				{InsertarOrdenadoFrecuencia {Unwrap Ds} R}
+				end
+			end
+		in
+			Diccionario=diccionario(new: NewDicc put:Put get:Get domain:Domain)
+		end
+		
+		fun {LlenarDiccionario L D}
+		  local K D2 in
+			 case L of nil then
+				D
+			 [] H|T then
+				K = {Diccionario.get D H 0}
+				D2 = {Diccionario.put D H K+1}
+				{LlenarDiccionario T D2}
+			 end
+		  end
+		end
+
+		% Imprime el arbol ordenado por frecuencia y alfabeticamente
+		proc {ImprimirArbol A}
+			case A of leaf then
+				skip
+			[] tree(Key Value T1 T2) then
+				{ImprimirArbol T1}
+				{Browse Key#Value}
+				{ImprimirArbol T2}
+			end
+		end
+		% Un procedimiento que recibe una lista con letras 
+		% y muestra por pantalla la frecuencia de aparicion de cada letra
+		% usando como estructura de datos un diccionario
+		proc {Programa L}
+			local D A in
+				% Inicializo el diccionario
+				D = {Diccionario.new}
+				% Lleno el diccionario
+				D2 = {LlenarDiccionario L D}
+				A = {Diccionario.domain D2}
+				{ImprimirArbol A}
+			end
+		end   
+		L1 = [b b m m m a a c a c p p l l l x a j j j j p t r r n n n n n h]
+		{Programa L1}   
+	end
 end
 
