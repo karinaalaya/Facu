@@ -1,0 +1,25 @@
+%funcion unaria
+declare fun {EsPar A}
+	   if (A mod 2 == 0) then
+	      true
+	   else
+	      false
+	   end
+	end
+%P1 puerto donde envio todos los elementos
+%P2 puerto donde envio solo los elementos que pasan el filtro
+declare P1 P2 in
+local S1 S2 in
+   {NewPort S1 P1}
+   {NewPort S2 P2}
+   thread {ForAll S1 proc {$ M}
+			if {EsPar M} then
+			   {Send P2 M}
+			end
+		     end} end
+   thread {ForAll S2 proc {$ M} {Browse M} end} end
+   {Send P1 1}
+   {Send P1 2}
+   {Send P1 3}
+   {Send P1 4}
+end

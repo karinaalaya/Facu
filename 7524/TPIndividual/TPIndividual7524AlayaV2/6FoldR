@@ -1,0 +1,10 @@
+% FoldR function
+declare fun {FoldR L F U}
+	   case L of nil then U
+	   [] H|T then {F H {FoldR T F U}}
+	   end
+	end
+declare fun {Suma X Y}
+	   X + Y
+	end
+{Show {FoldR [1 2 3] Suma 0}}

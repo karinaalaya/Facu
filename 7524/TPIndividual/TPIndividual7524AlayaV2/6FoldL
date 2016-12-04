@@ -1,0 +1,10 @@
+% FoldL function
+declare fun {FoldL L F U}
+	   case L of nil then U
+	   [] H|T then {F {FoldL T F U} H}
+	   end
+	end
+declare fun {Multiplica X Y}
+	   X * Y
+	end
+{Show {FoldL [2 2 3] Multiplica 1}}

@@ -1,0 +1,20 @@
+local Length in
+	Length = proc {$ Xs N}
+		case Xs of nil then
+			N = 0
+		else
+			case Xs of _|T then
+				local U in
+					{Length T U}
+					N = U + 1
+				end
+			else
+				skip
+			end
+		end
+	end
+	local K in
+		{Length [1 2 3 4] K}
+		{Show K}
+	end
+end
