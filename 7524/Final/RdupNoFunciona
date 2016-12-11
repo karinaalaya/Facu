@@ -1,0 +1,17 @@
+declare
+fun {Rdup L}
+   case L of nil then
+      nil
+   [] H|T then
+      case T of nil then
+	 H
+      [] H2|T2 then
+	 if H == H2 then
+	    H|{Rdup T2}
+	 else
+	    H|{Rdup T}
+	 end
+      end
+   end
+end
+{Browse {Rdup [1 1 1 2 2 3 3 3 1]}}

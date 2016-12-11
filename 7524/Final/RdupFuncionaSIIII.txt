@@ -1,0 +1,31 @@
+
+1-856-470-2436Passcode:103598  
+
+- elsa bonerman
+
+
+Good ideas on carving out home office space
+http://www.midwestliving.com/homes/organizing-storage/home-office 
+
+http://www.realsimple.com/home-organizing/decorating/home-office-ideas/corner-home-office-navy-wall 
+
+http://yourhomeonlybetter.com/carve-out-a-tiny-office-space/ 
+
+
+
+
+
+This bug can be reproducible in any database by performning the following operations: 
+1) Create a new boolean UDf, do not put a default value.
+2) Add the boolean UDf to the basic form Individual
+3) repeat the steps.
+
+This affects all the entities created by entity selectors.
+
+
+Bug for entity selector creating entities without UDF
+148697
+
+
+146956 -> bug for contacts to discuss with MAriano and Orestes
+
